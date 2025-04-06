@@ -1,18 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Language Flashcards</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Global reset for margin, padding, and box-sizing */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Styling for the body */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(45deg, #00c6ff, #0072ff); /* Blue gradient background */
+      background-size: 400% 400%; /* Smooth transition of gradient */
+      animation: gradientAnimation 10s ease infinite; /* Animation for gradient change */
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      transition: background-color 0.3s ease; /* Smooth background transition */
+    }
+
+    /* Header style */
+    header {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 40px;
+      color: #fff;
+    }
+
+    /* Control panel container styling */
+    .control-panel {
+      background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+      color: #1a1a1a;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+      width: 90%;
+      max-width: 1000px;
+      transition: all 0.3s ease;
+    }
+
+    /* Controls inside the control panel */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Label and select styling */
+    .controls label,
+    .controls select {
+      font-size: 1rem;
+      margin-right: 15px;
+      margin-bottom: 10px;
+    }
+
+    /* Select box style */
+    .controls select {
+      padding: 10px;
+      background-color: #f0f4f7;
+      border-radius: 8px;
+      border: none;
+    }
+
+    /* Button container */
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Button styling */
+    .action-btn {
+      padding: 15px 30px;
+      background-color: #ff7f50; /* Coral color */
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 5px;
+    }
+
+    /* Button hover effect */
+    .action-btn:hover {
+      background-color: #ff4500; /* Darker coral on hover */
+      transform: scale(1.05); /* Slight scale effect */
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Larger shadow on hover */
+    }
+
+    /* Remove outline on button focus */
+    .action-btn:focus {
+      outline: none;
+    }
+
+    /* Flashcard container styling */
+    .flashcard-container {
+      margin-top: 30px;
+    }
+
+    /* Flashcard style */
+    .flashcard {
+      position: relative;
+      width: 350px;
+      height: 250px;
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      transform-style: preserve-3d; /* Enable 3D transformation */
+      transform: rotateY(0deg); /* Initial front side visible */
+      transition: transform 0.8s ease; /* Smooth flip transition */
+      margin: 0 auto;
+    }
+
+    /* Front and back of flashcard styling */
+    .flashcard .front,
+    .flashcard .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden; /* Hide back when flipped */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+      padding: 20px;
+    }
+
+    /* Styling for the back of the card (flipped side) */
+    .flashcard .back {
+      transform: rotateY(180deg); /* Flip it 180 degrees */
+      background-color: #f0f0f0;
+    }
+
+    /* Flip the card */
+    .flashcard.flip {
+      transform: rotateY(180deg);
+    }
+
+    /* Front of the flashcard color */
+    .flashcard .front {
+      background-color: #ffeb3b; /* Yellow for the front */
+    }
+
+    /* Styling for different languages */
+    body.english {
+      background: linear-gradient(45deg, #5a8fdb, #2d6bb3); /* Blue shades for English */
+    }
+
+    body.turkish {
+      background: linear-gradient(45deg, #e30a17, #fff); /* Red and White for Turkish */
+    }
+
+    body.german {
+      background: linear-gradient(45deg, #000, #ffcc00, #d80027); /* Black, Yellow, Red for German */
+    }
+
+    /* Dark mode styling */
+    body.dark-mode {
+      background: linear-gradient(to right, #1a1a1a, #333); /* Darker background */
+      color: #eaeaea;
+    }
+
+    body.dark-mode .flashcard {
+      background-color: #444; /* Dark flashcard color in dark mode */
+    }
+
+    /* Animation for gradient background change */
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Fade-in animation */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* Media queries for responsiveness */
+    @media (max-width: 768px) {
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .flashcard {
+        width: 80%;
+        height: auto;
+      }
+
+      header {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
   <header>
-    <h1>Language Flashcards</h1>
+    <h1>Language Flashcards</h1> <!-- Page header -->
   </header>
 
   <div class="control-panel">
+    <!-- Language and difficulty selection controls -->
     <div class="controls">
       <label for="language">Choose a language:</label>
       <select id="language">
@@ -29,27 +257,153 @@
       </select>
     </div>
 
+    <!-- Action buttons for flipping, next, shuffle, and reset -->
     <div class="buttons">
       <button class="action-btn" id="flipCardBtn">Flip Card</button>
       <button class="action-btn" id="nextCardBtn">Next</button>
       <button class="action-btn" id="shuffleBtn">Shuffle</button>
       <button class="action-btn" id="resetBtn">Reset</button>
     </div>
-<br>
+
+    <br>
+    <!-- Display progress -->
     <p id="progress">Card 1/10</p>
   </div>
 
   <div class="flashcard-container">
+    <!-- Flashcard container that will show the word and translation -->
     <div class="flashcard">
       <div class="front">Word</div>
       <div class="back">Translation</div>
     </div>
   </div>
-<br>
+
+  <br>
+
+  <!-- Footer with credit -->
   <footer>
     <p>Developed by Your Abeerah</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    let currentLanguage = 'english'; // Default language is English
+    let flashcards = {
+      english: [{
+        word: 'Hello',
+        translation: 'Merhaba'
+      },
+      {
+        word: 'Goodbye',
+        translation: 'Hoşça kal'
+      }],
+      turkish: [{
+        word: 'Merhaba',
+        translation: 'Hello'
+      },
+      {
+        word: 'Hoşça kal',
+        translation: 'Goodbye'
+      }],
+      german: [{
+        word: 'Hallo',
+        translation: 'Hello'
+      },
+      {
+        word: 'Auf Wiedersehen',
+        translation: 'Goodbye'
+      }]
+    };
+
+    let currentFlashcards = flashcards[currentLanguage]; // Initialize with the selected language's flashcards
+    let currentIndex = 0; // Initialize card index
+
+    const languageSelect = document.getElementById('language');
+    const difficultySelect = document.getElementById('difficulty');
+    const flipCardBtn = document.getElementById('flipCardBtn');
+    const nextCardBtn = document.getElementById('nextCardBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const progress = document.getElementById('progress');
+    const flashcardContainer = document.querySelector('.flashcard');
+
+    // Event listener for language selection change
+    languageSelect.addEventListener('change', updateLanguage);
+    flipCardBtn.addEventListener('click', flipCard);
+    nextCardBtn.addEventListener('click', nextCard);
+    shuffleBtn.addEventListener('click', shuffleCards);
+    resetBtn.addEventListener('click', resetSession);
+
+    // Function to update the language and reset the flashcards
+    function updateLanguage() {
+      currentLanguage = languageSelect.value;
+      currentFlashcards = flashcards[currentLanguage];
+      document.body.classList.remove('english', 'turkish', 'german');
+      document.body.classList.add(currentLanguage);
+      resetFlashcard();
+    }
+
+    // Reset flashcard to the first card
+    function resetFlashcard() {
+      currentIndex = 0;
+      displayCard();
+      updateProgress();
+    }
+
+    // Display the current card
+    function displayCard() {
+      const currentCard = currentFlashcards[currentIndex];
+      flashcardContainer.querySelector('.front').textContent = currentCard.word;
+      flashcardContainer.querySelector('.back').textContent = currentCard.translation;
+      flashcardContainer.classList.remove('flip');
+    }
+
+    // Flip the flashcard
+    function flipCard() {
+      flashcardContainer.classList.toggle('flip');
+    }
+
+    // Show the next card
+    function nextCard() {
+      currentIndex = (currentIndex + 1) % currentFlashcards.length;
+      displayCard();
+      updateProgress();
+    }
+
+    // Shuffle the flashcards
+    function shuffleCards() {
+      currentFlashcards = shuffle(currentFlashcards);
+      currentIndex = 0;
+      displayCard();
+      updateProgress();
+    }
+
+    // Reset the session
+    function resetSession() {
+      currentIndex = 0;
+      displayCard();
+      updateProgress();
+    }
+
+    // Update the progress text (e.g., "Card 1/10")
+    function updateProgress() {
+      progress.textContent = `Card ${currentIndex + 1}/${currentFlashcards.length}`;
+    }
+
+    // Shuffle function
+    function shuffle(array) {
+      let currentIndex = array.length,
+        randomIndex, temporaryValue;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+      return array;
+    }
+  </script>
+
 </body>
+
 </html>
